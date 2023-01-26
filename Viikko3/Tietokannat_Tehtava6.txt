@@ -1,0 +1,48 @@
+//Poistetaan ensin pet-taulusta owner-kenttä//
+
+ALTER TABLE pet DROP COLUMN owner;
+
+//Luodaan uusi owner-taulu//
+
+CREATE TABLE owner
+    -> (
+    -> first_name varchar(255),
+    -> last_name varchar(255),
+    -> address varchar(255),
+    -> ownerID int PRIMARY KEY AUTO_INCREMENT
+    -> ) ;
+DESC owner;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| first_name | varchar(255) | YES  |     | NULL    |                |
+| last_name  | varchar(255) | YES  |     | NULL    |                |
+| address    | varchar(255) | YES  |     | NULL    |                |
+| ownerID    | int          | NO   | PRI | NULL    | auto_increment |
++------------+--------------+------+-----+---------+----------------+
+
+//Lisätään pet-tauluun viiteavain omistaja-tauluun//
+
+ALTER TABLE pet ADD COLUMN petID INT PRIMARY KEY AUTO_INCREMENT;
+ALTER TABLE pet ADD COLUMN ownerID INT;
+ALTER TABLE pet ADD CONSTRAINT FOREIGN KEY(ownerID) REFERENCES owner(ownerID);
+
+DESC pet;
++---------+-------------+------+-----+---------+----------------+
+| Field   | Type        | Null | Key | Default | Extra          |
++---------+-------------+------+-----+---------+----------------+
+| name    | varchar(20) | YES  |     | NULL    |                |
+| species | varchar(20) | YES  |     | NULL    |                |
+| sex     | char(1)     | YES  |     | NULL    |                |
+| birth   | date        | YES  |     | NULL    |                |
+| death   | date        | YES  |     | NULL    |                |
+| petID   | int         | NO   | PRI | NULL    | auto_increment |
+| ownerID | int         | YES  | MUL | NULL    |                |
++---------+-------------+------+-----+---------+----------------+
+
+//En tiedä pitääkö tässä tehtävässä vielä lisätä tietoaja owner-tauluun, joten lisään varmuuden vuoksi//
+
+INSERT INTO owner VALUES ( 'Harold','Lloyd','Someaddress 1',NULL);
+INSERT INTO owner VALUES ( 'Gwen','Stefani','Someaddress 2',NULL);
+INSERT INTO owner VALUES ( 'Benny','Hill','Someaddress 3',NULL);
+INSERT INTO owner VALUES ( 'Diane','Keaton','Someaddress 4',NULL);
