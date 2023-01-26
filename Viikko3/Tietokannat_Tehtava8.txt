@@ -1,9 +1,0 @@
-a) SELECT * FROM language ORDER BY name ASC;
-
-b) SELECT film_info FROM actor_info WHERE last_name='TEMPLE';
-
-c) SELECT actors FROM film_list WHERE title='Ghost Groundhog';
-
-d) SELECT COUNT(*) FROM film_list WHERE category='Horror';
-
-e) SELECT * FROM film_list WHERE category='Horror';
