@@ -1,0 +1,24 @@
+1)
+SELECT * FROM opiskelija
+JOIN arviointi ON opiskelija.idOpiskelija = arviointi.idOpiskelija
+WHERE arvosana = 0;
+
+2)
+SELECT * FROM opiskelija
+JOIN arviointi ON opiskelija.idOpiskelija = arviointi.idOpiskelija
+WHERE idOpintojakso = 3 AND arvosana != 0;
+
+3)
+SELECT Nimi FROM opintojakso
+JOIN arviointi ON opintojakso.idOpintojakso = arviointi.idOpintojakso
+JOIN opiskelija ON arviointi.idOpiskelija = opiskelija.idOpiskelija
+WHERE Etunimi = 'Hessu';
+
+4)
+SELECT AVG(Arvosana) FROM arviointi
+JOIN opiskelija ON arviointi.idOpiskelija = opiskelija.idOpiskelija
+WHERE Etunimi = 'Aku';
+
+5)
+SELECT * FROM opintojakso
+LEFT JOIN arviointi ON opintojakso.idOpintojakso = arviointi.idOpintojakso;
