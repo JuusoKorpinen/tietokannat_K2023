@@ -1,0 +1,86 @@
+//Täydennetään mallipohjaa//
+
+CREATE PROCEDURE `LisaaSuoritus` (
+IN En VARCHAR(45),
+IN Sn VARCHAR(45),
+IN KK VARCHAR(45),
+IN Arvos INT
+)
+
+-- Aliohjelman kutsu mysql:n komentoriviltä:
+-- CALL LisaaSuoritus('Iines','Ankka','T200123',3);
+
+ Aliohjelma:BEGIN -- Aliohjelma on LOOP-label,LEAVE:lla poistutaan
+
+declare OpiskID INT DEFAULT 0;
+declare OpjaksoID INT DEFAULT 0; //Määritellään ID opintojaksolle
+
+-- Määrittele itse lisää tarpeen mukaan...
+-- Jos löytyi, opiskelijan päävain tallettuu muuttujaan OpiskID > 0
+SELECT idOpiskelija INTO OpiskID FROM Opiskelija WHERE Etunimi=En AND Sukunimi=Sn;
+SELECT idOpintojakso INTO OpjaksoID FROM opintojakso WHERE Koodi=KK;
+
+-- Jos OpiskID jäi nollaksi, opiskelijaa ei löytynyt. Voidaan lopettaa suoritus.
+IF OpiskID=0 then 
+     SELECT 'Opiskelijaa ei ole'; -- TUlostetaan viesti käyttäjälle
+     LEAVE Aliohjelma;
+END IF;
+
+-- Samanlainen juttu tehtävä opintojaksolle
+IF OpjaksoID=0 then
+	SELECT 'Opintojaksoa ei ole';
+    LEAVE Aliohjelma;
+END IF;
+
+-- Tarkista, että muuttuja Arvos on välillä 0 - 5
+IF Arvos<0 OR Arvos>5 then
+	SELECT 'Arvosana pitaa olla valilla 0-5';
+    LEAVE Aliohjelma;
+END IF;
+
+-- Lopuksi, jos opiskelija ja opintojakso on olemassa ja arvosana on järkevä
+--  INSERT-lause, jolla syötät tiedot Arviointi-tauluun
+
+INSERT INTO Arviointi VALUES(NULL,CURDATE(),Arvos,OpjaksoID,OpiskID);
+
+END
+
+//Kokeillaan nyt kutsua aliohjelmaa MySQL:ssä//
+
+CALL LisaaSuoritus('Iines','Ankka','T200123',3);
++--------------------+
+| Opiskelijaa ei ole |
++--------------------+
+| Opiskelijaa ei ole |
++--------------------+
+//Tulostuu virhe koska ei ole Iinestä opiskelijana, joten lisätään ja kokeillaan uudestaan
+
+INSERT INTO opiskelija VALUES(NULL,'Iines','Ankka','Ankkalinnantie 22','52634')
+CALL LisaaSuoritus('Iines','Ankka','T200123',3);
++---------------------+
+| Opintojaksoa ei ole |
++---------------------+
+| Opintojaksoa ei ole |
++---------------------+
+//Tällä kertaa puuttuu opintojakso, joten lisätään sekin ja testataan toimiiko.
+
+INSERT INTO opintojakso VALUES (NULL,'Tietokannat ja rajapinnat','T200123','5');
+CALL LisaaSuoritus('Iines','Ankka','T200123',3);
+
+SELECT * FROM arviointi;
++-------------+-----------------+----------+---------------+--------------+
+| idArviointi | Päivämäärä      | Arvosana | idOpintojakso | idOpiskelija |
++-------------+-----------------+----------+---------------+--------------+
+|          14 | 2023-02-14      |        3 |             6 |           12 |
++-------------+-----------------+----------+---------------+--------------+
+
+
+//Näyttäisi nyt toimivan, mutta testataan vielä mitä tapahtuu, jos arvosana on liian suuri.
+CALL LisaaSuoritus('Iines','Ankka','T200123',9);
++---------------------------------+
+| Arvosana pitaa olla valilla 0-5 |
++---------------------------------+
+| Arvosana pitaa olla valilla 0-5 |
++---------------------------------+
+//Aliohjelma siis toimii täysin
+

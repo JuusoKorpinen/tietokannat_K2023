@@ -1,0 +1,36 @@
+//Täytetään tauluja//
+
+INSERT INTO tekija(Etunimi, Sukunimi) VALUES ('Yuval','Harari');
+INSERT INTO tekija(Etunimi, Sukunimi) VALUES ('Ilkka','Remes');
+
+INSERT INTO teos(Nimi,ISBN) VALUES ('A Brief History of Humankind','9780099590088');
+INSERT INTO teos(Nimi,ISBN) VALUES ('Tornado','9789510481004');
+INSERT INTO teos(Nimi,ISBN) VALUES ('Suomalaiset sahkokitaristit','9789520435400');
+
+INSERT INTO tekija_teos VALUES (6,6);
+INSERT INTO tekija_teos VALUES (7,7);
+INSERT INTO tekija_teos VALUES (8,9); //Tässä hypätään idTeos 8 yli, koska tein virheen ja jouduin poistamaan sen teoksen.
+INSERT INTO tekija_teos VALUES (9,9); //Teoksella 9 on kaksi tekijää(idTekija 8 ja 9);
+
+INSERT INTO kirja(idTeos,Luokitus) VALUES (6,'Tieto');  //AUTO-INCREMENT alkoi teoksissa kuutosesta niin sen takia tässäkin se.
+INSERT INTO kirja(idTeos,Luokitus) VALUES (7,'Kaunokirjallisuus');
+INSERT INTO kirja(idTeos,Luokitus) VALUES (7,'Kaunokirjallisuus');
+INSERT INTO kirja(idTeos,Luokitus) VALUES (9,'Elamankerta');
+
+INSERT INTO asiakas(Etunimi, Sukunimi, Osoite, Puhelinnumero) VALUES ('Matti','Meikalainen','Jokupaikka 1','0441234567');
+INSERT INTO asiakas(Etunimi, Sukunimi, Osoite, Puhelinnumero) VALUES ('Aku','Ankka','Paratiisitie 13','0447654321');
+
+INSERT INTO lainaus(LainausPVM,PalautusPVM,idAsiakas,idKirja,Palautettu) VALUES ('2023-01-01','2023-01-21',7,16,1); //idKirja on 16, koska auto-increment alkoi jostain syystä siitä
+INSERT INTO lainaus(LainausPVM,PalautusPVM,idAsiakas,idKirja,Palautettu) VALUES ('2023-02-07','2023-02-28',8,17,0);
+
+//Testataan toimiiko tulostamalla kirja, jolla on kaksi tekijää//
+
+SELECT Etunimi,Sukunimi FROM tekija tek 
+JOIN tekija_teos tt ON tek.idTekija=tt.idTekija 
+JOIN teos ON tt.idTeos=teos.idTeos WHERE ISBN='9789520435400';
++---------+----------+
+| Etunimi | Sukunimi |
++---------+----------+
+| Tommi   | Virtanen |
+| Pekka   | Laine    |
++---------+----------+
